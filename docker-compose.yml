@@ -392,6 +392,12 @@ services:
             - XMPP_PORT
             - MAX_SSRCS_PER_USER
             - MAX_SSRC_GROUPS_PER_USER
+            # new env
+            - JICOFO_ENABLE_BRIDGE_HEALTH_CHECKS=true
+            - JICOFO_BRIDGE_STRESS_THRESHOLD=0.8
+            - MAX_BRIDGE_PARTICIPANTS=100
+            - BRIDGE_AVG_PARTICIPANT_STRESS=0.7
+            - OCTO_BRIDGE_SELECTION_STRATEGY=RegionBasedBridgeSelectionStrategy
         depends_on:
             - prosody
         networks:
@@ -401,11 +407,21 @@ services:
     jvb:
         image: jitsi/jvb:${JITSI_IMAGE_VERSION:-stable-9646}
         restart: ${RESTART_POLICY:-unless-stopped}
-        ports:
-            - '${JVB_PORT:-10000}:${JVB_PORT:-10000}/udp'
-            - '127.0.0.1:${JVB_COLIBRI_PORT:-8080}:8080'
+        expose:
+            - '${JVB_PORT:-10000}/udp'
+            - '8080'
         volumes:
             - ${CONFIG}/jvb:/config:Z
+        deploy:
+            mode: replicated
+            replicas: 3  # Adjust based on your needs
+            resources:
+                limits:
+                    memory: 4G
+                    cpus: '2'
+                reservations:
+                    memory: 2G
+                    cpus: '1'
         environment:
             - AUTOSCALER_SIDECAR_KEY_FILE
             - AUTOSCALER_SIDECAR_KEY_ID
@@ -450,7 +466,6 @@ services:
             - SENTRY_DSN="${JVB_SENTRY_DSN:-0}"
             - SENTRY_ENVIRONMENT
             - SENTRY_RELEASE
-            - COLIBRI_REST_ENABLED
             - SHUTDOWN_REST_ENABLED
             - TZ
             - VIDEOBRIDGE_MAX_MEMORY
@@ -458,6 +473,18 @@ services:
             - XMPP_INTERNAL_MUC_DOMAIN
             - XMPP_SERVER
             - XMPP_PORT
+            #extra env
+            - DOCKER_HOST_ADDRESS=${DOCKER_HOST_ADDRESS}
+            - JVB_BREWERY_MUC=jvbbrewery
+            - JVB_PORT=${JVB_PORT:-10000}
+            - JVB_TCP_PORT=${JVB_TCP_PORT:-4443}
+            - JVB_TCP_HARVESTER_DISABLED=false
+            - ENABLE_COLIBRI_WEBSOCKET=1
+            - COLIBRI_REST_ENABLED=true
+            - JVB_COLIBRI_PORT=8080
+            - JVB_DISABLE_STUN=0
+            - JVB_STUN_SERVERS=meet-jit-si-turnrelay.jitsi.net:443
+            - VIDEOBRIDGE_MAX_MEMORY=3072m
         depends_on:
             - prosody
         networks:

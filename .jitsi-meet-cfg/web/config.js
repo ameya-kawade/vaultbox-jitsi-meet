@@ -128,7 +128,7 @@ config.prejoinConfig = {
 // List of buttons to hide from the extra join options dropdown on prejoin screen.
 // Welcome page.
 config.welcomePage = {
-    disabled: false
+    disabled: true
 };
 
 // Close page.
