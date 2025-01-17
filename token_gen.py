@@ -15,7 +15,6 @@ def generate_awt_token():
                 "lobby_bypass": False
             }
         },
-        "moderator": True,
         "aud": "jitsi",
         "iss": "jitsi",
         "sub": "jitsi-meet.example.com",
