@@ -481,7 +481,9 @@ services:
             - JVB_TCP_HARVESTER_DISABLED=false
             - ENABLE_COLIBRI_WEBSOCKET=1
             - COLIBRI_REST_ENABLED=true
-            - JVB_COLIBRI_PORT=8080
+            - JVB_COLIBRI_PORT=3030 
+            - ENABLE_PROMETHEUS=true
+            - PROMETHEUS_PORT=9090
             - JVB_DISABLE_STUN=0
             - JVB_STUN_SERVERS=meet-jit-si-turnrelay.jitsi.net:443
             - VIDEOBRIDGE_MAX_MEMORY=3072m
