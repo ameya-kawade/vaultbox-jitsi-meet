@@ -414,7 +414,7 @@ services:
             - ${CONFIG}/jvb:/config:Z
         deploy:
             mode: replicated
-            replicas: 3  # Adjust based on your needs
+            replicas: 3  
             resources:
                 limits:
                     memory: 4G
